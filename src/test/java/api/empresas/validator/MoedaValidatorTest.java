@@ -18,4 +18,18 @@ public class MoedaValidatorTest {
 
 		Assert.assertFalse(MoedaValidator.isValidMoeda(moeda));
 	}
+
+	@Test
+	public void shouldNotValidateEmptyMoeda() {
+		String moeda = "";
+
+		Assert.assertFalse(MoedaValidator.isValidMoeda(moeda));
+	}
+
+	@Test
+	public void shouldNotValidateNullMoeda() {
+		String moeda = null;
+
+		Assert.assertFalse(MoedaValidator.isValidMoeda(moeda));
+	}
 }

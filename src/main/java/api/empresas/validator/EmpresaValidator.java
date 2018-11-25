@@ -12,8 +12,12 @@ public class EmpresaValidator {
 	public static List<Error> validateEmpresa(Empresa empresa) {
 		List<Error> errors = new ArrayList<>();
 
-		if (!Objects.nonNull(empresa.getCnpj())) {
+		if (!Objects.nonNull(empresa.getCnpj()) || !CNPJValidator.isValidCnpj(empresa.getCnpj())) {
 			errors.add(new Error(Messages.INVALID_CNPJ));
+		}
+
+		if (Objects.nonNull(empresa.getMoeda()) && !MoedaValidator.isValidMoeda(empresa.getMoeda())) {
+			errors.add(new Error(Messages.INVALID_CURRENCY));
 		}
 
 		return errors;

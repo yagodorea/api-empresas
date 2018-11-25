@@ -1,0 +1,337 @@
+openapi: 3.0.0
+info:
+  description: API de cadastro de empresas
+  version: "1.0.0"
+  title: API Empresas
+  contact:
+    email: yago.dorea@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: recursos
+    description: |
+      Operações disponíveis para qualquer usuário com acesso ao sistema
+paths:
+  /empresas:
+    get:
+      tags: 
+      - recursos
+      summary: Lista todas as empresas
+      description: |
+        Pesquisa todas as empresas cadastradas no sistema.
+      operationId: getEmpresas
+      parameters: 
+        - name: limit
+          in: query
+          description: |
+            Número máximo de registros a serem retornados, para evitar sobrecarga.
+          required: true
+          style: form
+          explode: true
+          schema:
+            maximum: 50
+            minimum: 1
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: |
+            Deslocamento da resposta - complementar ao limite de registros, permite a paginação.
+          required: true
+          style: form
+          explode: true
+          schema:
+            minimum: 1
+            type: integer
+            format: int32
+        - name: cidade
+          in: query
+          description: |
+            Filtrar por cidade
+          required: false
+          schema:
+            type: string
+            example: "Campinas"
+        - name: moeda
+          in: query
+          description: |
+            Filtrar por moeda de trabalho
+          required: false
+          schema:
+            type: string
+            example: "BRL"
+      responses:
+        '200':
+          description: |
+            Resultado da pesquisa, mostrando todas as empresas encaixadas no filtro.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Empresa'
+        '404':
+          description: |
+            Nenhuma empresa encontrada.
+        '400':
+          description: |
+            Parâmetros de entrada incorretos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+    post:
+      tags: 
+      - recursos
+      summary: Cadastra empresa.
+      operationId: postUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmpresaInput'
+      responses:
+        '200':
+          description: |
+            Cadastro feito com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empresa'
+        '400':
+          description: |
+            Parâmetros de entrada incorretos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+  '/empresas/{empresaId}':
+    get:
+      tags: 
+      - recursos
+      summary: Retorna a empresa com o ID especificado.
+      operationId: getEmpresa
+      parameters: 
+        - name: empresaId
+          in: path
+          required: true
+          description: |
+            ID da empresa no sistema.
+          schema:
+            type: string
+            format: uuid
+      description: |
+        Retorna a empresa registrada no sistema com um determinado ID.
+      responses:
+        '200':
+          description: |
+            Sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empresa'
+        '404':
+          description: |
+            Não encontrado.
+    put:
+      tags: 
+      - recursos
+      summary: Modifica cadastro de empresa.
+      operationId: putEmpresa
+      parameters: 
+        - name: empresaId
+          in: path
+          required: true
+          description: |
+            ID da empresa.
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmpresaInput'
+      responses:
+        '200':
+          description: |
+            Modificação feita com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empresa'
+        '400':
+          description: |
+            Parâmetros de entrada incorretos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '404':
+          description: |
+            Não encontrado.
+    delete:
+      tags: 
+      - recursos
+      summary: Apaga cadastro de empresa.
+      operationId: deleteEmpresa
+      parameters: 
+        - name: empresaId
+          in: path
+          required: true
+          description: |
+            ID da empresa.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: |
+            Empresa removida com sucesso.
+        '404':
+          description: |
+            Não encontrado.
+  '/empresas/cnpj/{cnpj}':
+    get:
+      tags: 
+      - recursos
+      summary: Retorna a empresa com o cnpj especificado.
+      operationId: getEmpresaPorCnpj
+      parameters: 
+        - name: cnpj
+          in: path
+          required: true
+          description: |
+            CNPJ da empresa.
+          schema:
+            type: string
+            example: "62928944000180"
+      description: |
+        Retorna a empresa com o CNPJ especificado.
+      responses:
+        '200':
+          description: |
+            Sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empresa'
+        '404':
+          description: |
+            Não encontrado.
+    
+components:
+  schemas:
+    Empresa:
+      type: object
+      required:
+        - id
+        - cnpj
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "ab83f368-b5fb-4d2f-86de-896d15c92a00"
+        cnpj:
+          type: string
+          example: "62928944000180"
+        nome:
+          type: string
+          example: "Minha Empresa Comércio LTDA"
+        email:
+          type: string
+          example: "myemail@domain.com"
+        endereco:
+          $ref: '#/components/schemas/Endereco'
+        moeda:
+          type: string
+          example: "USD"
+        cotacao:
+          type: string
+          example: "3.8224"
+    EmpresaInput:
+      type: object
+      required:
+        - cnpj
+      properties:
+        cnpj:
+          type: string
+          example: "62928944000180"
+        nome:
+          type: string
+          example: "Minha Empresa Comércio LTDA"
+        email:
+          type: string
+          example: "myemail@domain.com"
+        endereco:
+          $ref: '#/components/schemas/EnderecoInput'
+        moeda:
+          type: string
+          example: "USD"
+        cotacao:
+          type: string
+          example: "3.8224"
+    Endereco:
+      type: object
+      required:
+        - id
+        - logradouro
+        - cidade
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "1aeaab7f-752f-4d5d-8556-107d6148dadf"
+        logradouro:
+          type: string
+          example: Rua Malvino de Castro
+        numero:
+          type: number
+          format: int32
+          example: 700
+        complemento:
+          type: string
+          example: "Casa"
+        cep:
+          type: string
+          example: '45875211'
+        bairro:
+          type: string
+          example: 'Centro'
+        cidade:
+          type: string
+          format: url
+          example: "Volta Redonda"
+    EnderecoInput:
+      type: object
+      properties:
+        logradouro:
+          type: string
+          example: Rua Malvino de Castro
+        numero:
+          type: number
+          format: int32
+          example: 700
+        complemento:
+          type: string
+          example: "Casa"
+        cep:
+          type: string
+          example: '45875211'
+        bairro:
+          type: string
+          example: 'Centro'
+        cidade:
+          type: string
+          format: url
+          example: "Volta Redonda"
+    Erro:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "4XX"
+        description:
+          type: string
+          example: "Descrição do erro"
