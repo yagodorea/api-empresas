@@ -86,4 +86,14 @@ public class EmpresaValidatorTest {
 		Assert.assertEquals(expected, errors);
 		Assert.assertEquals(1,errors.size());
 	}
+
+	@Test
+	public void shouldNotValidateNullEmpresa() {
+		List<Error> errors = EmpresaValidator.validateEmpresa(null);
+		List<Error> expected = new ArrayList<>();
+		expected.add(new Error(Messages.INVALID_INPUT));
+
+		Assert.assertEquals(expected, errors);
+		Assert.assertEquals(1,errors.size());
+	}
 }

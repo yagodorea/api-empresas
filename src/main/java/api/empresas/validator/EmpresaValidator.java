@@ -12,7 +12,12 @@ public class EmpresaValidator {
 	public static List<Error> validateEmpresa(Empresa empresa) {
 		List<Error> errors = new ArrayList<>();
 
-		if (!Objects.nonNull(empresa.getCnpj()) || !CNPJValidator.isValidCnpj(empresa.getCnpj())) {
+		if (Objects.isNull(empresa)) {
+			errors.add(new Error(Messages.INVALID_INPUT));
+			return errors;
+		}
+
+		if (Objects.isNull(empresa.getCnpj()) || !CNPJValidator.isValidCnpj(empresa.getCnpj())) {
 			errors.add(new Error(Messages.INVALID_CNPJ));
 		}
 
