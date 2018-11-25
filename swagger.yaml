@@ -30,7 +30,6 @@ paths:
           style: form
           explode: true
           schema:
-            maximum: 50
             minimum: 1
             type: integer
             format: int32
