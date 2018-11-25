@@ -31,4 +31,4 @@ mvn test
 
 ## Swagger
 
-O arquivo Swagger com o contrado dessa API está na raiz do projeto, com o nome `swagger.yaml`. Para visualizá-lo, basta copiar seu conteúdo no editor de Swagger http://editor.swagger.io/.
+O arquivo Swagger com o contrado dessa API, com detalhes dos objetos recebidos e retornados, e utilização de filtros e paginação, está na raiz do projeto, com o nome `swagger.yaml`. Para visualizá-lo, basta copiar seu conteúdo no editor de Swagger http://editor.swagger.io/.
